@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home - MiEL{% endblock %}
 {% block page_title %}MiEL Store{% endblock %}
@@ -18,9 +19,9 @@
                 <div class="relative overflow-hidden rounded-t-lg">
                     <div class="w-full h-48 bg-gray-50 flex items-center justify-center">
                         {% if product.image %}
-                            <img src="{{ product.image }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="{{ product.name }}" loading="lazy" onerror="this.src='/static/images/placeholder.jpg'; this.onerror=null;">
+                            <img src="{{ product.image }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="{{ product.name }}" loading="lazy" onerror="this.src='{{ STATIC_URL }}images/placeholder.jpg'; this.onerror=null;">
                         {% else %}
-                            <img src="/static/images/placeholder.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="{{ product.name }}" loading="lazy">
+                            <img src="{% static 'images/placeholder.jpg' %}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="{{ product.name }}" loading="lazy">
                         {% endif %}
                     </div>
                 </div>
@@ -181,6 +182,9 @@
 
 {% block extra_js %}
 <script>
+// Static placeholder image URL (rendered from Django template)
+const PLACEHOLDER_IMAGE = '{% static 'images/placeholder.jpg' %}';
+
 // Global function to open modal - needs to be outside DOMContentLoaded
 let modal, closeModal, modalProductName, modalProductImage, modalProductDescription, modalProductPrice, modalAddToCartForm, similarProducts;
 
@@ -191,11 +195,11 @@ function openProductModal(productId) {
             if (data.success) {
                 // Populate modal with product data
                 modalProductName.textContent = data.product.name;
-                const imageUrl = data.product.image || '/static/images/placeholder.jpg';
+                const imageUrl = data.product.image || PLACEHOLDER_IMAGE;
                 modalProductImage.src = imageUrl;
                 modalProductImage.alt = data.product.name;
                 modalProductImage.onerror = function() {
-                    this.src = '/static/images/placeholder.jpg';
+                    this.src = PLACEHOLDER_IMAGE;
                     this.onerror = null;
                 };
                 // Ensure image loads properly
@@ -237,10 +241,10 @@ function loadSimilarProducts(products) {
     products.forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'bg-white border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-md hover:border-purple-300 transition-all duration-200';
-        const imageSrc = product.image || '/static/images/placeholder.jpg';
+        const imageSrc = product.image || PLACEHOLDER_IMAGE;
         productCard.innerHTML = `
             <div class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden bg-gray-50 mb-3">
-                <img src="${imageSrc}" alt="${product.name}" class="w-full h-24 object-cover" onerror="this.src='/static/images/placeholder.jpg'; this.onerror=null;">
+                <img src="${imageSrc}" alt="${product.name}" class="w-full h-24 object-cover" onerror="this.src='${PLACEHOLDER_IMAGE}'; this.onerror=null;">
             </div>
             <h4 class="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">${product.name}</h4>
             <p class="text-purple-600 font-bold text-sm">$${product.price}</p>
