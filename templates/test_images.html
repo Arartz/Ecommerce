@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Images</title>
+</head>
+<body>
+    <h1>Test Image Loading</h1>
+    <p>Direct image test:</p>
+    <img src="/static/images/headphones.jpg" alt="Headphones" style="max-width: 200px;">
+    <p>Image from database:</p>
+    {% for product in products %}
+        <div>
+            <h3>{{ product.name }}</h3>
+            <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 200px;">
+            <p>Path: {{ product.image }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
