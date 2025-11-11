@@ -95,6 +95,7 @@ def update_cart_quantity(request, item_id):
     """Update cart item quantity via AJAX"""
     if request.method == 'POST':
         cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+        cart = cart_item.cart
         quantity = int(request.POST.get('quantity', 1))
         
         if quantity > 0:
@@ -104,16 +105,27 @@ def update_cart_quantity(request, item_id):
             return JsonResponse({
                 'success': True,
                 'subtotal': float(cart_item.get_subtotal()),
-                'total': float(cart_item.cart.get_total()),
-                'cart_count': cart_item.cart.get_item_count()
+                'total': float(cart.get_total()),
+                'cart_count': cart.get_item_count()
             })
         else:
+            # Get cart info before deleting the item
             cart_item.delete()
+            # Refresh cart from database to get updated totals
+            cart.refresh_from_db()
+            # Check if cart still exists and has items
+            if CartItem.objects.filter(cart=cart).exists():
+                total = float(cart.get_total())
+                cart_count = cart.get_item_count()
+            else:
+                total = 0.0
+                cart_count = 0
+            
             return JsonResponse({
                 'success': True,
                 'removed': True,
-                'total': float(cart_item.cart.get_total() if Cart.objects.filter(user=request.user).exists() else 0),
-                'cart_count': Cart.objects.get(user=request.user).get_item_count() if Cart.objects.filter(user=request.user).exists() else 0
+                'total': total,
+                'cart_count': cart_count
             })
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})

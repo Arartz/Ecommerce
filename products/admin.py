@@ -1,3 +1,35 @@
 from django.contrib import admin
+from .models import Product, Cart, CartItem
 
-# Register your models here.
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['name', 'description']
+    ordering = ['-created_at']
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['user', 'created_at', 'get_item_count', 'get_total']
+    list_filter = ['created_at']
+    search_fields = ['user__username']
+    readonly_fields = ['created_at']
+    
+    def get_item_count(self, obj):
+        return obj.get_item_count()
+    get_item_count.short_description = 'Item Count'
+    
+    def get_total(self, obj):
+        return f"${obj.get_total():.2f}"
+    get_total.short_description = 'Total'
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['product', 'cart', 'quantity', 'get_subtotal', 'added_at']
+    list_filter = ['added_at']
+    search_fields = ['product__name', 'cart__user__username']
+    readonly_fields = ['added_at']
+    
+    def get_subtotal(self, obj):
+        return f"${obj.get_subtotal():.2f}"
+    get_subtotal.short_description = 'Subtotal'

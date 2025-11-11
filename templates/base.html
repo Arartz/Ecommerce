@@ -5,241 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MiEL - E-commerce{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Slack-inspired color scheme */
-        :root {
-            --slack-purple: #4A154B;
-            --slack-purple-light: #611f69;
-            --slack-purple-dark: #3e0f3e;
-            --slack-white: #FFFFFF;
-            --slack-light-gray: #F8F8F8;
-            --slack-gray: #1D1D1D;
-            --slack-dark-gray: #2C2C2C;
-            --slack-border: #3F3F3F;
-            --slack-text: #D1D2D3;
-            --slack-text-light: #E8E8E8;
-        }
-        
-        .slack-sidebar {
-            background: linear-gradient(135deg, var(--slack-purple) 0%, var(--slack-purple-light) 100%);
-        }
-        
-        .slack-content {
-            background-color: var(--slack-white);
-        }
-        
-        .slack-header {
-            background-color: var(--slack-white);
-            border-bottom: 1px solid #E5E7EB;
-        }
-        
-        .slack-nav-item {
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.2s ease;
-        }
-        
-        .slack-nav-item:hover {
-            color: var(--slack-white);
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .slack-nav-item.active {
-            color: var(--slack-white);
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .mobile-sidebar.open {
-                transform: translateX(0);
-            }
-        }
-    </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-50">
-    <!-- Mobile Header -->
-    <div class="slack-header md:hidden fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-4">
-        <button id="mobile-menu-toggle" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
-        <a href="{% url 'home' %}" class="text-xl font-bold text-purple-600">MiEL</a>
-        <div class="w-10"></div>
-    </div>
-
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div id="sidebar" class="slack-sidebar w-64 flex-shrink-0 mobile-sidebar md:relative md:translate-x-0 fixed left-0 top-0 h-full z-30 md:z-0">
-            <div class="flex flex-col h-full">
-                <!-- Sidebar Header -->
-                <div class="p-4 border-b border-purple-700">
-                    <a href="{% url 'home' %}" class="text-white text-xl font-bold flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                            <span class="text-purple-600 font-bold text-lg">M</span>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-2 text-xl font-bold text-gray-900 hover:text-purple-600 transition-colors">
+                        <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">M</span>
                         </div>
                         <span>MiEL</span>
                     </a>
                 </div>
 
-                <!-- Navigation -->
-                <nav class="flex-1 p-4 space-y-2">
-                    <a href="{% url 'home' %}" class="slack-nav-item flex items-center space-x-3 px-3 py-2 rounded-lg active">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                        <span>Home</span>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                        Home
                     </a>
-
+                    
                     {% if user.is_authenticated %}
-                        <a href="{% url 'view_cart' %}" class="slack-nav-item flex items-center space-x-3 px-3 py-2 rounded-lg relative">
+                        <!-- Cart -->
+                        <a href="{% url 'view_cart' %}" class="relative text-gray-700 hover:text-purple-600 font-medium transition-colors flex items-center space-x-1">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h12M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"/>
                             </svg>
                             <span>Cart</span>
-                            <span class="absolute right-3 bg-white text-purple-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{{ cart_count|default:"0" }}</span>
+                            <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{{ cart_count|default:"0" }}</span>
                         </a>
-                    {% endif %}
-                </nav>
 
-                <!-- User Section -->
-                <div class="p-4 border-t border-purple-700">
-                    {% if user.is_authenticated %}
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-8 h-8 bg-purple-300 rounded-full flex items-center justify-center">
-                                <span class="text-purple-800 font-bold text-sm">{{ user.username|first|upper }}</span>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-white text-sm font-medium truncate">{{ user.username }}</p>
-                                <p class="text-purple-200 text-xs">Online</p>
-                            </div>
-                        </div>
-                        <a href="{% url 'logout' %}" class="slack-nav-item flex items-center space-x-3 px-3 py-2 rounded-lg w-full">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                            </svg>
-                            <span>Logout</span>
-                        </a>
-                    {% else %}
-                        <div class="space-y-2">
-                            <a href="{% url 'login' %}" class="slack-nav-item flex items-center space-x-3 px-3 py-2 rounded-lg w-full">
+                        <!-- User Dropdown -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-700 hover:text-purple-600 font-medium transition-colors focus:outline-none">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-sm font-semibold">{{ user.username|first|upper }}</span>
+                                </div>
+                                <span class="hidden lg:block">{{ user.username }}</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
-                                <span>Login</span>
-                            </a>
-                            <a href="{% url 'register' %}" class="slack-nav-item flex items-center space-x-3 px-3 py-2 rounded-lg w-full">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-                                </svg>
-                                <span>Register</span>
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Desktop Header -->
-            <div class="slack-header hidden md:flex items-center justify-between px-6 py-4 border-b">
-                <h1 class="text-2xl font-bold text-gray-900">{% block page_title %}MiEL Store{% endblock %}</h1>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <input type="text" placeholder="Search products..." class="w-64 px-4 py-2 pl-10 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-6 slack-content">
-                <!-- Messages -->
-                {% if messages %}
-                    <div class="messages space-y-3 mb-6">
-                        {% for message in messages %}
-                            <div class="alert alert-dismissible rounded-lg p-4 border-l-4 
-                                {% if message.tags == 'success' %}bg-green-50 border-green-400 text-green-700
-                                {% elif message.tags == 'error' %}bg-red-50 border-red-400 text-red-700
-                                {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-400 text-yellow-700
-                                {% else %}bg-blue-50 border-blue-400 text-blue-700{% endif %}">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex items-center">
-                                        {% if message.tags == 'success' %}
-                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="py-1">
+                                    <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                                             </svg>
-                                        {% elif message.tags == 'error' %}
-                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                        {% elif message.tags == 'warning' %}
-                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                            </svg>
-                                        {% else %}
-                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                                            </svg>
-                                        {% endif %}
-                                        <span class="text-sm font-medium">{{ message }}</span>
-                                    </div>
-                                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 transition-colors duration-150">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                    </button>
+                                            <span>Logout</span>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="flex items-center space-x-4">
+                            <a href="{% url 'login' %}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                                Login
+                            </a>
+                            <a href="{% url 'register' %}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-medium transition-colors">
+                                Sign Up
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
 
-                {% block content %}
-                {% endblock %}
-            </main>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-purple-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                    Home
+                </a>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'view_cart' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors flex items-center justify-between">
+                        <span class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h12M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"/>
+                            </svg>
+                            <span>Cart</span>
+                        </span>
+                        <span class="bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{{ cart_count|default:"0" }}</span>
+                    </a>
+                    <div class="border-t border-gray-200 pt-2 mt-2">
+                        <div class="px-3 py-2 text-sm text-gray-500">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-sm font-semibold">{{ user.username|first|upper }}</span>
+                                </div>
+                                <span class="font-medium text-gray-700">{{ user.username }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'logout' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                            Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                        Login
+                    </a>
+                    <a href="{% url 'register' %}" class="block px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 font-medium transition-colors text-center">
+                        Sign Up
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Messages -->
+        {% if messages %}
+            <div class="messages space-y-3 mb-6">
+                {% for message in messages %}
+                    <div class="alert alert-dismissible rounded-lg p-4 border-l-4 
+                        {% if message.tags == 'success' %}bg-green-50 border-green-400 text-green-700
+                        {% elif message.tags == 'error' %}bg-red-50 border-red-400 text-red-700
+                        {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-400 text-yellow-700
+                        {% else %}bg-blue-50 border-blue-400 text-blue-700{% endif %}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center">
+                                {% if message.tags == 'success' %}
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% elif message.tags == 'error' %}
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% elif message.tags == 'warning' %}
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% else %}
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% endif %}
+                                <span class="text-sm font-medium">{{ message }}</span>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 transition-colors duration-150">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
 
     <script>
         // Mobile menu toggle
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('open');
-        });
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.getElementById('mobile-menu-toggle');
-            if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
-                sidebar.classList.remove('open');
+            if (mobileMenuButton && mobileMenu) {
+                if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
             }
         });
 
-        // Auto-dismiss messages after 5 seconds
-        setTimeout(() => {
-            const messages = document.querySelectorAll('.messages .alert-dismissible');
-            messages.forEach(message => {
-                message.style.opacity = '0';
-                message.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => message.remove(), 500);
-            });
-        }, 5000);
-    </script>
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
-
-    <script>
         // Auto-dismiss messages after 5 seconds
         setTimeout(() => {
             const messages = document.querySelectorAll('.messages .alert-dismissible');
